@@ -31,7 +31,7 @@ class News {
     description: data['description'] ?? 'No Description',
     content: data['content'] ?? 'No Content',
     url: data['url'] ?? 'No URL',
-    urlToImage: data['urlToImage'] ?? 'https://via.placeholder.com/150', 
+    urlToImage: data['urlToImage'] ?? 'assets/images/empty.png', 
     publishedAt: data['publishedAt'] != null
         ? DateTime.parse(data['publishedAt'])
         : DateTime.now(), 

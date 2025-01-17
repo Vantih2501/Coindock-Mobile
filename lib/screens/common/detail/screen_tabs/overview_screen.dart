@@ -1,11 +1,13 @@
 import 'package:coindock_app/%20util/constants/colors.dart';
+import 'package:coindock_app/model/coin_market_model.dart';
 import 'package:coindock_app/widgets/card/_card_news_title.dart';
 import 'package:coindock_app/widgets/charts/line_charts.dart';
 import 'package:flutter/material.dart';
 
-class OverviewScreen extends StatefulWidget {
-  
-  const OverviewScreen({super.key});
+class OverviewScreen extends StatefulWidget {  
+  final CoinMarket coin;
+
+  const OverviewScreen({super.key, required this.coin});
 
   @override
   State<OverviewScreen> createState() => _OverviewScreenState();
@@ -16,6 +18,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
   @override
   Widget build(BuildContext context) {
+  final isPriceUp = widget.coin.ath_change_percentage > 0;
+
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
@@ -23,7 +27,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
           scrollDirection: Axis.vertical,
           shrinkWrap: true,
           children: [
-            _priceInfo(),
+            _priceInfo(isPriceUp),
             SizedBox(height: 12),
             LineChartCard(),
             _filterSection(),
@@ -47,12 +51,12 @@ class _OverviewScreenState extends State<OverviewScreen> {
                   child: ListView(
                     scrollDirection: Axis.horizontal,
                     children: [
-                      CardNewsTitle(),
-                      SizedBox(width: 16),
-                      CardNewsTitle(),
-                      SizedBox(width: 16),
-                      CardNewsTitle(),
-                      SizedBox(width: 16),
+                      // CardNewsTitle(),
+                      // SizedBox(width: 16),
+                      // CardNewsTitle(),
+                      // SizedBox(width: 16),
+                      // CardNewsTitle(),
+                      // SizedBox(width: 16),
                     ],
                   ),
                 ),
@@ -157,7 +161,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
     );
   }
 
-  Column _priceInfo() {
+  Column _priceInfo(isPriceUp) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -172,16 +176,21 @@ class _OverviewScreenState extends State<OverviewScreen> {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Text(
-              '\$70,509.75',
+              '\$${widget.coin.current_price}',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.w600,
                 color: AppColors.dark)),
             SizedBox(width: 12),
-            Text('+ 1700.254 (9.77%)',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.green.shade400)),
+            Text(
+            isPriceUp
+                ? '▲ ${widget.coin.ath_change_percentage} (${widget.coin.ath_change_percentage.toStringAsFixed(2)}%)'
+                : '▼ ${widget.coin.ath_change_percentage} (${widget.coin.ath_change_percentage.toStringAsFixed(2)}%)',
+            style: TextStyle(
+              fontSize: 16,
+              color: isPriceUp ? Colors.green.shade400 : Colors.red.shade400,
+            ),
+          ),
           ],
         )
       ],

@@ -24,6 +24,7 @@ class App extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
+        fontFamily: 'Inter',
         useMaterial3: true,
         scaffoldBackgroundColor: Colors.white,
       ),
