@@ -4,6 +4,7 @@ import 'package:coindock_app/model/news_model.dart';
 import 'package:coindock_app/service/coin_gecko_service/_coin_market.dart';
 import 'package:coindock_app/service/news_service/_news_coin.dart';
 import 'package:coindock_app/widgets/card/_card.dart';
+import 'package:coindock_app/widgets/card/_card_fill_news_card.dart';
 import 'package:coindock_app/widgets/card/_card_news.dart';
 import 'package:coindock_app/widgets/search/_search.dart';
 import 'package:flutter/material.dart';
@@ -17,21 +18,15 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   late Future<List<CoinMarket>> _coints;
-  late Future<List<News>> _news;
+  late Future<List<News>> _recentNews;
+  late Future<List<News>> _hottestNews;
 
   @override
   void initState() {
     super.initState();
-    _fetchCoinMarket();
-    _fetchNews();
-  }
-
-  void _fetchCoinMarket() async {
     _coints = ClassCoinMarket().getCoinMarket();
-  }
-
-  void _fetchNews() async {
-    _news = ClassNews().getNews();
+    _recentNews = ClassNews().getRecentNews();
+    _hottestNews = ClassNews().getHottestNews();
   }
 
   @override
@@ -60,17 +55,39 @@ class _SearchPageState extends State<SearchPage> {
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: Text('Hottest News', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.dark)),
                     ),
-                    Container(
-                      margin: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                      height: 197,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16),
-                        color: AppColors.light
-                      ),
+                    FutureBuilder(
+                      future: _hottestNews,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return Center(child: CircularProgressIndicator());
+                        } else if (snapshot.hasError) {
+                          return Center(child: Text('Error: ${snapshot.error}'));
+                        } else if (!snapshot.hasData || (snapshot.data as List).isEmpty) {
+                          return Center(child: Text('No data available'));
+                        } else {
+                          final hottestNewsData = snapshot.data as List; // Cast to the correct type
+                          return SizedBox(
+                            height: 220,
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              shrinkWrap: true,
+                              itemCount: hottestNewsData.length,
+                              itemBuilder: (context, index) {
+                                final news = hottestNewsData[index];
+                                return FillNewsCard(data: news);
+                              },
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                    SizedBox(height: 8),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Text('Recent News', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.dark)),
                     ),
                     FutureBuilder<List<News>>(
-                      future: _news,
+                      future: _recentNews,
                       builder: (context, snapshot) {
                         if (snapshot.connectionState == ConnectionState.waiting) {
                           return Center(child: CircularProgressIndicator());
@@ -127,3 +144,5 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 }
+
+

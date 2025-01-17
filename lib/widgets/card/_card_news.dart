@@ -2,6 +2,7 @@ import 'package:coindock_app/%20util/constants/colors.dart';
 import 'package:coindock_app/%20util/formater/news_date_formatter.dart';
 import 'package:coindock_app/model/news_model.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class NewsCard extends StatelessWidget {
   final News data;
@@ -11,7 +12,10 @@ class NewsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () async {
+        final url = data.url;
+        await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+      },
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
         child: Row(
