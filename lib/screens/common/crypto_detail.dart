@@ -55,7 +55,7 @@ class _CryptoDetailPageState extends State<CryptoDetailPage> {
               return TabBarView(
                 children: [
                   OverviewScreen(coin: coinData, listNews: _newsByName),
-                  InfoScreen(),
+                  InfoScreen(data: coinData),
                   NewsScreen(listNews: _newsByName, coinName: coinData.name!),
                 ],
               );
