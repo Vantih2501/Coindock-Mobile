@@ -3,18 +3,18 @@ class CoinMarket {
   final String symbol;
   final String name;
   final String image;
-  final double current_price;
-  final double market_cap;
-  final double ath_change_percentage;
+  final double currentPrice;
+  final double marketCap;
+  final double? priceChangePercentage24h;
 
   CoinMarket({
     required this.id,
     required this.symbol,
     required this.name,
     required this.image,
-    required this.current_price,
-    required this.market_cap,
-    required this.ath_change_percentage
+    required this.currentPrice,
+    required this.marketCap,
+    this.priceChangePercentage24h
   });
   
   factory CoinMarket.fromJson(Map<String, dynamic> data) {
@@ -23,9 +23,9 @@ class CoinMarket {
       symbol: data['symbol'], 
       name: data['name'], 
       image: data['image'], 
-      current_price: data['current_price'].toDouble(), 
-      market_cap: data['market_cap'].toDouble(),
-      ath_change_percentage: data['ath_change_percentage'],
+      currentPrice: data['current_price'].toDouble(), 
+      marketCap: data['market_cap'].toDouble(),
+      priceChangePercentage24h: data['price_change_percentage_24h'] != null ? data['price_change_percentage_24h'].toDouble() : 0.0,
     );
   }
 }

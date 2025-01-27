@@ -1,3 +1,4 @@
+import 'package:coindock_app/model/coin_detail/detail_coin_market_model.dart';
 import 'package:coindock_app/model/coin_market_model.dart';
 import 'package:coindock_app/service/dio_client_service/_dio_client.dart';
 import 'package:flutter/material.dart';
@@ -12,19 +13,19 @@ class ClassCoinMarket {
 
       return coinMarketList;
     } catch (e) {
-      print('Error fetching data: $e');
+      debugPrint('Error fetching data: $e');
       throw Exception('Failed to fetch coin market data');
     }
   }
 
-  Future<CoinMarket> getCoinMarketById(String id) async {
+  Future<DetailCoinMarket> getCoinMarketById(String id) async {
   try {
     final response = await dio.get('/coins/$id');
-    CoinMarket coinMarket = CoinMarket.fromJson(response.data);
-    return coinMarket;
+    DetailCoinMarket coinMarketData = DetailCoinMarket.fromJson(response.data);
+    return coinMarketData;
   } catch (e) {
     debugPrint('Error fetching data: $e');
     throw Exception('Failed to fetch coin market data');
+    }
   }
-}
 }

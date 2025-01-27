@@ -1,13 +1,16 @@
 import 'package:coindock_app/%20util/constants/colors.dart';
-import 'package:coindock_app/model/coin_market_model.dart';
+import 'package:coindock_app/%20util/formater/price_formatter.dart';
+import 'package:coindock_app/model/coin_detail/detail_coin_market_model.dart';
+import 'package:coindock_app/model/news_model.dart';
 import 'package:coindock_app/widgets/card/_card_news_title.dart';
 import 'package:coindock_app/widgets/charts/line_charts.dart';
 import 'package:flutter/material.dart';
 
 class OverviewScreen extends StatefulWidget {  
-  final CoinMarket coin;
+  final DetailCoinMarket coin;
+  final Future<List<News>> listNews;
 
-  const OverviewScreen({super.key, required this.coin});
+  const OverviewScreen({super.key, required this.coin, required this.listNews});
 
   @override
   State<OverviewScreen> createState() => _OverviewScreenState();
@@ -18,7 +21,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
   @override
   Widget build(BuildContext context) {
-  final isPriceUp = widget.coin.ath_change_percentage > 0;
+  final isPriceUp = widget.coin.marketData.priceChange24hInCurrency!['usd']! > 0;
 
     return Scaffold(
       body: Padding(
@@ -34,34 +37,9 @@ class _OverviewScreenState extends State<OverviewScreen> {
             SizedBox(height: 32),
             _descriptionSection(),
             SizedBox(height: 20),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Bitcoin News', 
-                  style: TextStyle(
-                    fontSize: 16, 
-                    fontWeight: FontWeight.w600, 
-                    color: AppColors.dark
-                    )
-                  ),
-                SizedBox(height: 16),
-                SizedBox(
-                  height: 254,
-                  child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    children: [
-                      // CardNewsTitle(),
-                      // SizedBox(width: 16),
-                      // CardNewsTitle(),
-                      // SizedBox(width: 16),
-                      // CardNewsTitle(),
-                      // SizedBox(width: 16),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+            _informationSection(),
+            SizedBox(height: 24),
+            _newsSection()
           ],
         ),
       ),
@@ -84,29 +62,144 @@ class _OverviewScreenState extends State<OverviewScreen> {
     );
   }
 
+  Column _informationSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Information',
+          style: TextStyle(
+            fontSize: 16, 
+            fontWeight: FontWeight.w600, 
+            color: AppColors.dark
+            )
+          ),
+          SizedBox(height: 16),
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppColors.light, width: 1)
+            ),
+            child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _infoContainer('Market capital', formatToUSD(widget.coin.marketData.marketCap!['usd']!).toString()),
+              SizedBox(height: 14),
+              _infoContainer('Total supply', '${widget.coin.marketData.totalSupply}'),
+              SizedBox(height: 14),
+              _infoContainer('Circulating supply', '${widget.coin.marketData.circulatingSupply}'),
+              SizedBox(height: 14),
+              _infoContainer('Watchlist users', '${widget.coin.marketData.watchlistPortfolioUsers}'),
+          ])
+          )
+      ],
+    );
+  }
+
+  Row _infoContainer(String title, String value) {
+    return Row(
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 14, 
+              fontWeight: FontWeight.w400, 
+              color: AppColors.text200
+              )
+            ),
+            const Spacer(),
+            Text(
+              value,
+              style: TextStyle(
+                fontSize: 14, 
+                fontWeight: FontWeight.w500, 
+                color: AppColors.dark
+                )
+              )
+      ]);
+  }
+
+  Column _newsSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '${widget.coin.name} News', 
+          style: TextStyle(
+            fontSize: 16, 
+            fontWeight: FontWeight.w600, 
+            color: AppColors.dark
+            )
+          ),
+        SizedBox(height: 16),
+        SizedBox(
+          height: 254,
+          child: FutureBuilder(
+            future: widget.listNews, 
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              } else if (!snapshot.hasData) {
+                return const Center(child: Text('No data available'));
+              } else {
+                final newsData = snapshot.data as List;
+                return ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: newsData.length,
+                  itemBuilder: (context, index) {
+                    final news = newsData[index];
+                    return (
+                      newsData.isEmpty
+                      ? SizedBox(
+                          width: MediaQuery.of(context).size.width,
+                          height: 254,
+                          child: Image.asset('assets/images/empty.png'),
+                        )
+                      : Row(
+                          children: [
+                            CardNewsTitle(data: news),
+                            SizedBox(width: 20),
+                          ]
+                        )
+                    );
+                  },
+                );
+              } 
+            }
+          )
+        ),
+      ],
+    );
+  }
+
   Column _descriptionSection() {
     return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Descrition',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.dark 
-                  ),
-                ),
-                SizedBox(height: 12),
-                Text(
-                  'Lorem ipsum dolor sit amet consectetur. Ornare viverra arcu sed nunc ultrices vel ornare. Amet turpis nisl nisi egestas cras amet. Mus quisque pharetra ultrices nullam ornare aenean sem eget ac. Pellentesque at vivamus ac imperdiet pellentesque sit integer arcu. Sem habitant eu convallis nunc.',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w400,
-                    color: AppColors.text300 
-                  ),
-                )
-              ],
-            );
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Description',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: AppColors.dark 
+          ),
+        ),
+        SizedBox(height: 12),
+        Text(
+          widget.coin.description ?? 'No description available',
+          maxLines: 7,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w400,
+            color: AppColors.text300 
+          ),
+        )
+      ],
+    );
   }
 
   Container _filterSection() {
@@ -166,7 +259,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Bitcoin Price',
+          '${widget.coin.name} Price',
           style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w500,
@@ -176,7 +269,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Text(
-              '\$${widget.coin.current_price}',
+              '\$${widget.coin.marketData.currentPrice['usd']!.toStringAsFixed(2)}',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.w600,
@@ -184,8 +277,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
             SizedBox(width: 12),
             Text(
             isPriceUp
-                ? '▲ ${widget.coin.ath_change_percentage} (${widget.coin.ath_change_percentage.toStringAsFixed(2)}%)'
-                : '▼ ${widget.coin.ath_change_percentage} (${widget.coin.ath_change_percentage.toStringAsFixed(2)}%)',
+                ? '▲ ${widget.coin.marketData.priceChangePercentage24hInCurrency?['usd']!.toStringAsFixed(2)}%'
+                : '▼ ${widget.coin.marketData.priceChangePercentage24hInCurrency?['usd']!.toStringAsFixed(2)}%',
             style: TextStyle(
               fontSize: 16,
               color: isPriceUp ? Colors.green.shade400 : Colors.red.shade400,

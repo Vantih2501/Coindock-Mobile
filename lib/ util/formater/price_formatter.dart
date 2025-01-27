@@ -8,3 +8,12 @@ String formatToIDR(double amount) {
   );
   return formatter.format(amount);
 }
+
+String formatToUSD(double amount) {
+  final formatter = NumberFormat.currency(
+    locale: 'en_US', 
+    symbol: '\$', 
+    decimalDigits: 2
+  );
+  return formatter.format(amount); 
+}

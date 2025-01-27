@@ -13,7 +13,7 @@ class CryptoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isPriceUp = data.ath_change_percentage > 0;
+    final isPriceUp = data.priceChangePercentage24h! > 0;
 
     return ElevatedButton(
       onPressed: (){
@@ -61,7 +61,7 @@ class CryptoCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  currency == 'idr' ? formatToIDR(data.current_price) : '\$${data.current_price}',
+                  currency == 'idr' ? formatToIDR(data.currentPrice) : '\$${data.currentPrice}',
                   style: TextStyle(
                     fontSize: 14, 
                     fontWeight: FontWeight.w600, 
@@ -80,7 +80,7 @@ class CryptoCard extends StatelessWidget {
                     ),
                     SizedBox(width: 4),
                     Text(
-                      '${data.ath_change_percentage.toStringAsFixed(2)}%',
+                      '${data.priceChangePercentage24h!.toStringAsFixed(2)}%',
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                         color: isPriceUp

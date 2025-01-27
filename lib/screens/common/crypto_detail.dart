@@ -1,8 +1,10 @@
-import 'package:coindock_app/model/coin_market_model.dart';
+import 'package:coindock_app/model/coin_detail/detail_coin_market_model.dart';
+import 'package:coindock_app/model/news_model.dart';
 import 'package:coindock_app/screens/common/detail/screen_tabs/info_screen.dart';
 import 'package:coindock_app/screens/common/detail/screen_tabs/news_screen.dart';
 import 'package:coindock_app/screens/common/detail/screen_tabs/overview_screen.dart';
 import 'package:coindock_app/service/coin_gecko_service/_coin_market.dart';
+import 'package:coindock_app/service/news_service/_news_coin.dart';
 import 'package:coindock_app/widgets/appbar/detailWithTab_appbar.dart';
 import 'package:flutter/material.dart';
 
@@ -16,15 +18,14 @@ class CryptoDetailPage extends StatefulWidget {
 }
 
 class _CryptoDetailPageState extends State<CryptoDetailPage> {
-  late Future<CoinMarket> _cointMarket;
-  // late Future<CoinMarket> _newsByName;
+  late Future<DetailCoinMarket> _cointMarket;
+  late Future<List<News>> _newsByName;
 
   @override
   void initState() {
     super.initState();
-    debugPrint('CryptoDetailPage id: ${widget.id}');
     _cointMarket = ClassCoinMarket().getCoinMarketById(widget.id);
-    // _newsByName = ClassNews().getNewsByName(_coint.name);
+    _newsByName = ClassNews().getNewsByName(widget.id);
   }
 
   @override
@@ -40,7 +41,7 @@ class _CryptoDetailPageState extends State<CryptoDetailPage> {
             Tab(text: "News"),
           ],
         ),
-        body: FutureBuilder<CoinMarket>(
+        body: FutureBuilder<DetailCoinMarket>(
           future: _cointMarket,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
@@ -50,12 +51,12 @@ class _CryptoDetailPageState extends State<CryptoDetailPage> {
             } else if (!snapshot.hasData) {
               return const Center(child: Text('No data available'));
             } else {
-              final coin = snapshot.data!;
+              final coinData = snapshot.data!;
               return TabBarView(
                 children: [
-                  OverviewScreen(coin: coin),
+                  OverviewScreen(coin: coinData, listNews: _newsByName),
                   InfoScreen(),
-                  NewsScreen(),
+                  NewsScreen(listNews: _newsByName, coinName: coinData.name!),
                 ],
               );
             }
