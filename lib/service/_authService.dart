@@ -59,4 +59,9 @@ class AuthService {
       return "Invalid email or password. Please try again.";
     }
   }
+
+  Future<void> logout() async {
+    await auth.signOut();
+    await googleSignIn.signOut();
+  }
 }

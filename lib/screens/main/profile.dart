@@ -1,4 +1,6 @@
 import 'package:coindock_app/%20util/constants/colors.dart';
+import 'package:coindock_app/service/_authService.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
@@ -7,12 +9,16 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    User? user = FirebaseAuth.instance.currentUser;
+    
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: ListView(
           children: [
-            _profileSection(),
+            user != null 
+              ? _profileSection(user) 
+              : Container(),
             SizedBox(height: 24),
             Column(
               children: [
@@ -67,7 +73,38 @@ class ProfilePage extends StatelessWidget {
                 SizedBox(height: 12),
                 _settingButton('Ipsum'),
                 SizedBox(height: 12),
-                _settingButton('Logout'),
+                SizedBox(
+                  width: double.infinity,
+                  height: 52,
+                  child: ElevatedButton(
+                    onPressed: (){
+                      AuthService().logout();
+                    }, 
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: AppColors.dark.withValues(alpha: 0.1),
+                      alignment: Alignment.centerLeft,
+                      elevation: 0,
+                      backgroundColor: AppColors.light,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Text(
+                          'Logout',
+                          style: TextStyle(
+                            color: AppColors.dark,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500
+                          ),
+                        ),
+                        Spacer(),
+                        Icon(LucideIcons.chevronRight, color: AppColors.dark)
+                      ],
+                    ),
+                  ),
+                ),
               ],
             )
           ],
@@ -146,7 +183,7 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Padding _profileSection() {
+  Padding _profileSection(User user) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Row(
@@ -164,7 +201,7 @@ class ProfilePage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Gandara Fathurrahman',
+                user.displayName ?? 'Hamdy Ganduls',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
@@ -172,7 +209,7 @@ class ProfilePage extends StatelessWidget {
                 ),
               ),
               Text(
-                'ganduls.hamdy016@gmail.com',
+                user.email ?? '6KoGy@example.com',
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w400,

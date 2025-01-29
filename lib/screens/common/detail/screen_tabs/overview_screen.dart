@@ -18,6 +18,8 @@ class OverviewScreen extends StatefulWidget {
 
 class _OverviewScreenState extends State<OverviewScreen> {
   String activeButton = '';
+  String selectedCurrency = 'usd';
+  int isSelectedDays = 7;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +34,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
           children: [
             _priceInfo(isPriceUp),
             SizedBox(height: 12),
-            LineChartCard(),
+            LineChartCard(id: widget.coin.id, currency: selectedCurrency, days: 7),
             _filterSection(),
             SizedBox(height: 32),
             _descriptionSection(),
@@ -204,25 +206,25 @@ class _OverviewScreenState extends State<OverviewScreen> {
 
   Container _filterSection() {
     return Container(
-              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                color: AppColors.light
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  _buttonFilter('1H'),
-                  _buttonFilter('1D'),
-                  _buttonFilter('1M'),
-                  _buttonFilter('1Y'),
-                  _buttonFilter('ALL'),
-                ]
-              )
-            );
+      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        color: AppColors.light
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          _buttonFilter('1D', 1),
+          _buttonFilter('7D', 7),
+          _buttonFilter('1M', 30),
+          _buttonFilter('1Y', 365),
+          _buttonFilter('ALL', 1825),
+        ]
+      )
+    );
   }
 
-  SizedBox _buttonFilter(String title) {
+  SizedBox _buttonFilter(String title, int days) {
     bool isSelected = activeButton == title;
 
     return SizedBox(
@@ -238,6 +240,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
         onPressed: () {
           setState(() {
             activeButton = isSelected ? '' : title;
+            isSelectedDays = days;
           });
         },
         child: Center(

@@ -2,7 +2,6 @@ import 'package:fl_chart/fl_chart.dart';
 
 class LineData {
   final spots = const [
-    // FlSpot(x, y) x = Tanggal, y = Nilai
     FlSpot(1.68, 21.04),
     FlSpot(2.84, 26.23),
     FlSpot(5.19, 19.82),
@@ -47,7 +46,7 @@ class LineData {
     FlSpot(116.60, 42.13),
     FlSpot(118.52, 57.60),
   ];
-
+}
   // final leftTitle = {
   //   0: '0',
   //   20: '2K',
@@ -70,4 +69,3 @@ class LineData {
   //   100: 'Nov',
   //   110: 'Dec',
   // };
-}

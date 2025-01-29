@@ -1,3 +1,4 @@
+import 'package:coindock_app/model/coin_chart/chart_coin_model.dart';
 import 'package:coindock_app/model/coin_detail/detail_coin_market_model.dart';
 import 'package:coindock_app/model/coin_market_model.dart';
 import 'package:coindock_app/service/dio_client_service/_dio_client.dart';
@@ -26,6 +27,20 @@ class ClassCoinMarket {
   } catch (e) {
     debugPrint('Error fetching data: $e');
     throw Exception('Failed to fetch coin market data');
+    }
+  }
+
+  Future<ChartData> getCoinMarketChart({String currency = 'usd', int days = 7, required String id}) async {
+    try {
+      final response = await dio.get('/coins/$id/market_chart', queryParameters: {
+        'vs_currency': currency, 
+        'days': days.toString()
+      });
+      ChartData coinChartData = ChartData.fromJson(response.data);
+      return coinChartData;
+    } catch (e) {
+      debugPrint('Error fetching data: $e');
+      throw Exception('Failed to fetch coin market chart data');
     }
   }
 }
