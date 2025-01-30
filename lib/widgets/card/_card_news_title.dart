@@ -10,7 +10,6 @@ class CardNewsTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('ini adalah link =' + data.url);
     return GestureDetector(
        onTap: () async {
         final url = data.url;

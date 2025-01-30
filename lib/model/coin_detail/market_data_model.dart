@@ -17,7 +17,6 @@ class MarketDataModel {
   final double? marketCapRank;
   final double? totalSupply;
   final double? circulatingSupply;
-  final double? watchlistPortfolioUsers;
 
   MarketDataModel({
     required this.currentPrice,
@@ -38,7 +37,6 @@ class MarketDataModel {
     this.marketCapRank,
     this.totalSupply,
     this.circulatingSupply,
-    this.watchlistPortfolioUsers,
   });
 
   factory MarketDataModel.fromJson(Map<String, dynamic> json) {
@@ -65,9 +63,8 @@ class MarketDataModel {
               ?.map((key, value) => MapEntry(key.toString(), (value as num?)?.toDouble() ?? 0.0 )),
       marketCap: (json['market_cap'] as Map<dynamic, dynamic>?)?.map((key, value) => MapEntry(key.toString(), (value as num?)?.toDouble() ?? 0.0 )) ?? {},
       marketCapRank: (json['market_cap_rank'] as num?)?.toDouble() ?? 0.0,
-      totalSupply: (json['total_supply'] as num?)?.toDouble() ?? 0.0,
+      totalSupply: (json['max_supply'] as num?)?.toDouble() ?? 0.0,
       circulatingSupply: (json['circulating_supply'] as num?)?.toDouble() ?? 0.0,
-      watchlistPortfolioUsers: json['watchlist_portfolio_users'].toDouble() ?? 0.0
     );
   }
 }

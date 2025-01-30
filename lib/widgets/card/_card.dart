@@ -61,7 +61,7 @@ class CryptoCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  currency == 'idr' ? formatToIDR(data.currentPrice) : '\$${data.currentPrice}',
+                  currency == 'idr' ? formatToIDR(data.currentPrice) : '\$${formatToUSD(data.currentPrice)}',
                   style: TextStyle(
                     fontSize: 14, 
                     fontWeight: FontWeight.w600, 

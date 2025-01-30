@@ -1,6 +1,4 @@
 import 'package:coindock_app/%20util/constants/colors.dart';
-import 'package:coindock_app/util/constants/colors.dart';
-import 'package:coindock_app/data/line_chart_data.dart';
 import 'package:coindock_app/model/coin_chart/chart_coin_model.dart';
 import 'package:coindock_app/service/coin_gecko_service/_coin_market.dart';
 import 'package:coindock_app/widgets/card/_card_custom.dart';
@@ -30,6 +28,18 @@ class _LineChartCardState extends State<LineChartCard> {
   void initState() {
     super.initState();
     _coinChartData = _fetchCoinChartData();
+    debugPrint('Initializing chart data: ${widget.days} days, ${widget.currency}');
+  }
+
+  @override
+  void didUpdateWidget(LineChartCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.days != oldWidget.days || widget.currency != oldWidget.currency) {
+      debugPrint('Updating chart data: ${widget.days} days, ${widget.currency}');
+      setState(() {
+      _coinChartData = _fetchCoinChartData();
+      });
+    }
   }
 
   Future<ChartData> _fetchCoinChartData() async {
@@ -54,7 +64,6 @@ class _LineChartCardState extends State<LineChartCard> {
         }
 
         final data = snapshot.data!;
-
         return CustomCard(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -65,7 +74,7 @@ class _LineChartCardState extends State<LineChartCard> {
                   LineChartData(
                     lineTouchData: LineTouchData(
                       touchSpotThreshold: 5,
-                      getTouchLineStart: (_, __) => -double.infinity,
+                      getTouchLineStart: (_, __) => 0,
                       getTouchLineEnd: (_, __) => double.infinity,
                       getTouchedSpotIndicator:
                           (LineChartBarData barData, List<int> spotIndexes) {
@@ -102,7 +111,7 @@ class _LineChartCardState extends State<LineChartCard> {
                               textAlign: TextAlign.center,
                               children: [
                                 TextSpan(
-                                  text: 'Date: ${barSpot.x.toInt()}',
+                                  text: '${barSpot.x.toInt()}',
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold,
@@ -143,13 +152,13 @@ class _LineChartCardState extends State<LineChartCard> {
                           show: true,
                         ),
                         dotData: FlDotData(show: false),
-                        spots: data.prices.map((e) => FlSpot(e.date, e.value)).toList(),
+                        spots: data.prices.map((e) => FlSpot(e.date.toDouble(), e.value.toDouble())).toList(),
                       ),
                     ],
-                    minX: 0,
-                    maxX: data.prices.length.toDouble(),
-                    // maxY: data.prices.maxY,
-                    // minY: data.prices.minY,
+                    minX: data.prices.first.date.toDouble(),
+                    maxX: data.prices.last.date.toDouble(),
+                    minY: data.prices.map((e) => e.value).reduce((a, b) => a < b ? a : b),
+                    maxY: data.prices.map((e) => e.value).reduce((a, b) => a > b ? a : b),
                   ),
                 ),
               ),

@@ -6,6 +6,7 @@ class DetailCoinMarket {
   final String? symbol;
   final String? name;
   final String? description;
+  final double? watchlistPortfolioUsers;
   final ImageModel image;
   final MarketDataModel marketData;
 
@@ -16,6 +17,7 @@ class DetailCoinMarket {
     this.symbol,
     this.name,
     this.description,
+    this.watchlistPortfolioUsers
   });
 
    factory DetailCoinMarket.fromJson(Map<String, dynamic> json) {
@@ -32,6 +34,7 @@ class DetailCoinMarket {
       marketData: json['market_data'] != null 
         ? MarketDataModel.fromJson(json['market_data']) 
         : MarketDataModel(currentPrice: {}),
+      watchlistPortfolioUsers: (json['watchlist_portfolio_users'] as num?)?.toDouble() ?? 0.0
      );
    }
 }
