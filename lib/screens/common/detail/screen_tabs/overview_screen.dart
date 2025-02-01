@@ -5,6 +5,7 @@ import 'package:coindock_app/model/news_model.dart';
 import 'package:coindock_app/widgets/card/_card_news_title.dart';
 import 'package:coindock_app/widgets/charts/line_charts.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 
 class OverviewScreen extends StatefulWidget {  
   final DetailCoinMarket coin;
@@ -17,7 +18,7 @@ class OverviewScreen extends StatefulWidget {
 }
 
 class _OverviewScreenState extends State<OverviewScreen> {
-  String activeButton = '';
+  String activeButton = '7D';
   String selectedCurrency = 'usd';
   int isSelectedDays = 7;
 
@@ -55,8 +56,8 @@ class _OverviewScreenState extends State<OverviewScreen> {
               borderRadius: BorderRadius.circular(12),
             ),
           ),
-          onPressed: (){
-
+          onPressed: () {
+            Navigator.pushNamed(context, '/payment');
           },
           child: const Text('Buy Coin', style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.white)),
         ),
@@ -77,24 +78,17 @@ class _OverviewScreenState extends State<OverviewScreen> {
             )
           ),
           SizedBox(height: 16),
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppColors.light, width: 1)
-            ),
-            child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _infoContainer('Market capital', formatToUSD(widget.coin.marketData.marketCap!['usd']!).toString()),
-              SizedBox(height: 14),
-              _infoContainer('Total supply', '${widget.coin.marketData.totalSupply}'),
-              SizedBox(height: 14),
-              _infoContainer('Circulating supply', '${widget.coin.marketData.circulatingSupply}'),
-              SizedBox(height: 14),
-              _infoContainer('Watchlist users', '${widget.coin.marketData.watchlistPortfolioUsers}'),
+          Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _infoContainer('Market capital', '\$${formatToUSD(widget.coin.marketData.marketCap!['usd']!).toString()}'),
+            SizedBox(height: 14),
+            _infoContainer('Total supply', formatToUSD(widget.coin.marketData.totalSupply!).toString()),
+            SizedBox(height: 14),
+            _infoContainer('Circulating supply', formatToUSD(widget.coin.marketData.circulatingSupply!).toString()),
+            SizedBox(height: 14),
+            _infoContainer('Watchlist users', formatToUSD(widget.coin.watchlistPortfolioUsers!).toString()),
           ])
-          )
       ],
     );
   }
@@ -190,15 +184,18 @@ class _OverviewScreenState extends State<OverviewScreen> {
           ),
         ),
         SizedBox(height: 12),
-        Text(
-          widget.coin.description ?? 'No description available',
-          maxLines: 7,
-          overflow: TextOverflow.ellipsis,
-          style: TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w400,
-            color: AppColors.text300 
-          ),
+        Html(
+          data: widget.coin.description ?? 'No description available',
+          style: {
+            "body": Style(
+              fontSize: FontSize(13),
+              lineHeight: LineHeight.number(1.2),
+              margin: Margins.all(0),
+              maxLines: 7,
+              textOverflow: TextOverflow.ellipsis,
+              textDecorationColor: AppColors.text100   
+            )
+          },
         )
       ],
     );
@@ -272,7 +269,7 @@ class _OverviewScreenState extends State<OverviewScreen> {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Text(
-              '\$${widget.coin.marketData.currentPrice['usd']!.toStringAsFixed(2)}',
+              '\$${formatToUSD(widget.coin.marketData.currentPrice['usd']!).toString()}',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.w600,
