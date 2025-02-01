@@ -1,4 +1,5 @@
 import 'package:coindock_app/routes/routes.dart';
+import 'package:coindock_app/screens/common/moonpay_webview.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -29,7 +30,7 @@ class App extends StatelessWidget {
         scaffoldBackgroundColor: Colors.white,
       ),
       // home: SafeArea(
-      //   child: const NavigationMenu()
+      //   child: CryptoPurchaseForm()
       //   ),
       initialRoute: '/',
       routes: CustomRoutes,

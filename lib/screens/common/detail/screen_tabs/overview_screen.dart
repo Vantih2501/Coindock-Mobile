@@ -2,6 +2,7 @@ import 'package:coindock_app/%20util/constants/colors.dart';
 import 'package:coindock_app/%20util/formater/price_formatter.dart';
 import 'package:coindock_app/model/coin_detail/detail_coin_market_model.dart';
 import 'package:coindock_app/model/news_model.dart';
+import 'package:coindock_app/screens/common/moonpay_webview.dart';
 import 'package:coindock_app/widgets/card/_card_news_title.dart';
 import 'package:coindock_app/widgets/charts/line_charts.dart';
 import 'package:flutter/material.dart';
@@ -57,7 +58,10 @@ class _OverviewScreenState extends State<OverviewScreen> {
             ),
           ),
           onPressed: () {
-            Navigator.pushNamed(context, '/payment');
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => MoonPayWebView(coin: (widget.coin.symbol!).toUpperCase()))
+            );
           },
           child: const Text('Buy Coin', style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.white)),
         ),

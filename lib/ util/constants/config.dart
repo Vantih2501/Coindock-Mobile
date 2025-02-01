@@ -9,4 +9,9 @@ class Config {
   // News API
   static String? baseUrlNews = dotenv.env['BASE_URL_NEWS'];
   static String? apiKeyNews = dotenv.env['API_KEY_NEWS'];
+
+  // Paymoon API
+  static String? baseUrlMoonpay = dotenv.env['BASE_URL_MOONPAY'];
+  static String? apiKeyMoonPaySecret = dotenv.env['HM_ACCESS_KEY_SECRET'];
+  static String? apiKeyMoonPay = dotenv.env['HM_ACCESS_KEY_SECRET'];
 }

@@ -195,24 +195,28 @@ class ProfilePage extends StatelessWidget {
               color: AppColors.light,
               shape: BoxShape.circle,
             ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(44),
+              child: Image.network(user.photoURL ?? 'https://cdn-icons-png.flaticon.com/512/149/149071.png', fit: BoxFit.cover),
+            ),
           ),
           SizedBox(width: 16),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                user.displayName ?? 'Hamdy Ganduls',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.dark
-                ),
-              ),
+              // Text(
+              //   user.displayName ?? 'Hamdy Ganduls',
+              //   style: TextStyle(
+              //     fontSize: 16,
+              //     fontWeight: FontWeight.w600,
+              //     color: AppColors.dark
+              //   ),
+              // ),
               Text(
                 user.email ?? '6KoGy@example.com',
                 style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w400,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
                   color: AppColors.dark
                 ),
               )
